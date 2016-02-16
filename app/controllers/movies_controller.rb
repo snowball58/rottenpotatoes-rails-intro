@@ -1,5 +1,4 @@
 class MoviesController < ApplicationController
-
   def movie_params
     params.require(:movie).permit(:title, :rating, :description, :release_date)
   end
@@ -11,14 +10,22 @@ class MoviesController < ApplicationController
   end
   # rails s -p $PORT -b $IP
   def index
-    @movies = Movie.all
+    @all_ratings = ['G','PG','PG-13','R','NC-17']
+    @ratings = params[:ratings]
+    if not @ratings
+      @movies = Movie.all
+    else 
+      @movies = Movie.where(:rating => @ratings.keys)
+    end
   end
   
   def titlesort
+    @all_ratings = ['G','PG','PG-13','R','NC-17']
     @movies = Movie.order(:title)
   end
   
   def datesort
+    @all_ratings = ['G','PG','PG-13','R','NC-17']
     @movies = Movie.order(:release_date)
   end
 
