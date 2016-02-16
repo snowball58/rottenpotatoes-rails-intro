@@ -9,9 +9,17 @@ class MoviesController < ApplicationController
     @movie = Movie.find(id) # look up movie by unique ID
     # will render app/views/movies/show.<extension> by default
   end
-
+  # rails s -p $PORT -b $IP
   def index
     @movies = Movie.all
+  end
+  
+  def titlesort
+    @movies = Movie.order(:title)
+  end
+  
+  def datesort
+    @movies = Movie.order(:release_date)
   end
 
   def new
@@ -41,5 +49,4 @@ class MoviesController < ApplicationController
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
   end
-
 end

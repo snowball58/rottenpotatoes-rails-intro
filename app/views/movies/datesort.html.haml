@@ -1,4 +1,4 @@
--#  This file is app/views/movies/index.html.haml
+-#  This file is app/views/movies/datesort.html.haml
 %h1 All Movies
 
 %table#movies
@@ -6,7 +6,7 @@
     %tr
       %th= link_to 'Movies', movies_titlesort_path, :title => 'title_header'
       %th Rating
-      %th= link_to 'Release Date', movies_datesort_path, :title => 'release_date_header'
+      %th{:class => 'hilite'}= link_to 'Release Date', movies_path, :title => 'release_date_header'
       %th More Info
   %tbody
     - @movies.each do |movie|

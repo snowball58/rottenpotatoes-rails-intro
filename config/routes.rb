@@ -4,7 +4,8 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'movies#index'
-
+  get 'movies/titlesort', :to => 'movies#titlesort'
+  get 'movies/datesort', :to => 'movies#datesort'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
@@ -15,7 +16,6 @@ Rails.application.routes.draw do
   #   resources :products
 
   resources :movies
-  
   # Example resource route with options:
   #   resources :products do
   #     member do
