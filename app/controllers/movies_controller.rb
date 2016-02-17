@@ -28,6 +28,8 @@ class MoviesController < ApplicationController
       @release_date_header = 'hilite'
       @title_header = ''
     else
+      @title_header = ''
+      @release_date_header = ''
       if @ratings
         @movies = Movie.where(:rating => @ratings.keys)
         session[:current_user_id][0] = @ratings
@@ -41,28 +43,52 @@ class MoviesController < ApplicationController
   
   def titlesort
     @ratings = params[:ratings]
-    if (not @ratings) and (not session[:current_user_id][0])
-      @movies = Movie.order(:title)
-    elsif not @ratings
-      @movies = Movie.where(:rating => session[:current_user_id][0].keys).order(:title)
-    else 
-      @movies = Movie.where(:rating => @ratings.keys).order(:title)
-      session[:current_user_id][0] = @ratings
+    if session[:current_user_id][1] === 1
+      @title_header = ''
+      session[:current_user_id][1] = 0
+      index
+    else
+      if (not @ratings) and (not session[:current_user_id][0])
+        @movies = Movie.order(:title)
+        @title_header = 'hilite'
+        @release_date_header = ''
+      elsif not @ratings
+        @movies = Movie.where(:rating => session[:current_user_id][0].keys).order(:title)
+        @title_header = 'hilite'
+        @release_date_header = ''
+      else 
+        @movies = Movie.where(:rating => @ratings.keys).order(:title)
+        @title_header = 'hilite'
+        @release_date_header = ''
+        session[:current_user_id][0] = @ratings
+      end
+      session[:current_user_id][1] = 1
     end
-    session[:current_user_id][1] = 1
   end
   
   def datesort
     @ratings = params[:ratings]
-    if (not @ratings) and (not session[:current_user_id][0])
-      @movies = Movie.order(:release_date)
-    elsif not @ratings
-      @movies = Movie.where(:rating => session[:current_user_id][0].keys).order(:release_date)
-    else 
-      @movies = Movie.where(:rating => @ratings.keys).order(:release_date)
-      session[:current_user_id][0] = @ratings
+    if session[:current_user_id][1] === 2
+      @release_date_header = ''
+      session[:current_user_id][1] = 0
+      index
+    else
+      if (not @ratings) and (not session[:current_user_id][0])
+        @movies = Movie.order(:release_date)
+        @release_date_header = 'hilite'
+        @title_header = ''
+      elsif not @ratings
+        @movies = Movie.where(:rating => session[:current_user_id][0].keys).order(:release_date)
+        @release_date_header = 'hilite'
+        @title_header = ''
+      else 
+        @movies = Movie.where(:rating => @ratings.keys).order(:release_date)
+        @release_date_header = 'hilite'
+        @title_header = ''
+        session[:current_user_id][0] = @ratings
+      end
+      session[:current_user_id][1] = 2
     end
-    session[:current_user_id][1] = 2
   end
 
   def new
