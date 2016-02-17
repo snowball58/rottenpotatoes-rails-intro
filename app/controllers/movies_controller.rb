@@ -10,23 +10,59 @@ class MoviesController < ApplicationController
   end
   # rails s -p $PORT -b $IP
   def index
-    @all_ratings = ['G','PG','PG-13','R','NC-17']
     @ratings = params[:ratings]
-    if not @ratings
-      @movies = Movie.all
-    else 
-      @movies = Movie.where(:rating => @ratings.keys)
+    if not session[:current_user_id]
+      session[:current_user_id] = []
+      if @ratings
+        @movies = Movie.where(:rating => @ratings.keys)
+        session[:current_user_id][0] = @ratings
+      else
+        @movies = Movie.all
+      end
+    elsif session[:current_user_id][1] === 1
+      titlesort
+      @title_header = 'hilite'
+      @release_date_header = ''
+    elsif session[:current_user_id][1] === 2
+      datesort
+      @release_date_header = 'hilite'
+      @title_header = ''
+    else
+      if @ratings
+        @movies = Movie.where(:rating => @ratings.keys)
+        session[:current_user_id][0] = @ratings
+      elsif session[:current_user_id][0]
+        @movies = Movie.where(:rating => session[:current_user_id][0].keys)
+      else
+        @movies = Movie.all
+      end
     end
   end
   
   def titlesort
-    @all_ratings = ['G','PG','PG-13','R','NC-17']
-    @movies = Movie.order(:title)
+    @ratings = params[:ratings]
+    if (not @ratings) and (not session[:current_user_id][0])
+      @movies = Movie.order(:title)
+    elsif not @ratings
+      @movies = Movie.where(:rating => session[:current_user_id][0].keys).order(:title)
+    else 
+      @movies = Movie.where(:rating => @ratings.keys).order(:title)
+      session[:current_user_id][0] = @ratings
+    end
+    session[:current_user_id][1] = 1
   end
   
   def datesort
-    @all_ratings = ['G','PG','PG-13','R','NC-17']
-    @movies = Movie.order(:release_date)
+    @ratings = params[:ratings]
+    if (not @ratings) and (not session[:current_user_id][0])
+      @movies = Movie.order(:release_date)
+    elsif not @ratings
+      @movies = Movie.where(:rating => session[:current_user_id][0].keys).order(:release_date)
+    else 
+      @movies = Movie.where(:rating => @ratings.keys).order(:release_date)
+      session[:current_user_id][0] = @ratings
+    end
+    session[:current_user_id][1] = 2
   end
 
   def new
